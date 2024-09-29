@@ -6,8 +6,6 @@
 
 
 export function createGetter(path) {
-  return (obj) => {
-    const keys = path.split(".");
-    return keys.reduce((acc, key)=> acc?.hasOwnProperty(key) ? acc[key] : undefined, obj);  
-  };
+  const keys = path.split(".");
+  return obj => keys.reduce((acc, key)=> acc?.hasOwnProperty(key) ? acc[key] : undefined, obj);
 }
