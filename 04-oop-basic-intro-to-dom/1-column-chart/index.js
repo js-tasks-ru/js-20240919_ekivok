@@ -3,31 +3,31 @@ export default class ColumnChart {
     element;
 
     constructor(props = {}) {
-      const { data = [], label = '', link = '', value = 0, formatHeading = (value) => value } = props;
-      this.data = this.getDataProps(data);
-      this.label = label;
-      this.link = link;
-      this.value = formatHeading(value);
-      this.formatHeading = formatHeading;
-      this.render();
+        const { data = [], label = '', link = '', value = 0, formatHeading = (value) => value } = props;
+        this.data = this.getDataProps(data);
+        this.label = label;
+        this.link = link;
+        this.value = formatHeading(value);
+        this.formatHeading = formatHeading;
+        this.element = this.createElement();
     }
 
     getDataProps(data) {
-      const maxValue = Math.max(...data);
-      const scale = this.chartHeight / maxValue;
+        const maxValue = Math.max(...data);
+        const scale = this.chartHeight / maxValue;
 
-      return data.map(item => {
-        return {
-          percent: (item / maxValue * 100).toFixed(0) + '%',
-          value: String(Math.floor(item * scale))
-        };
-      });
+        return data.map(item => {
+            return {
+                percent: (item / maxValue * 100).toFixed(0) + '%',
+                value: String(Math.floor(item * scale))
+            };
+        });
     }
 
     createLink = (link) => `<a href="${link}" class="column-chart__link">View all</a>`
 
     createDataList = (data) => data.map(({ value, percent }) =>
-      `<div style="--value: ${value}" data-tooltip="${percent}"></div>`).join("");
+        `<div style="--value: ${value}" data-tooltip="${percent}"></div>`).join("");
 
     createTitle = (label, link) => `
         <div class="column-chart__title">
@@ -37,10 +37,8 @@ export default class ColumnChart {
     `
 
     createTemplate() {
-      const root = document.createElement("div",);
-      const isLoading = this.data.length > 0;
-
-      root.innerHTML = `
+        const isLoading = this.data.length > 0;
+        const template = `
             <div class="column-chart ${isLoading ? '' : 'column-chart_loading'}" style="--chart-height: ${this.chartHeight}">
                 ${this.createTitle(this.label, this.link)}
                 <div class="column-chart__container">
@@ -51,23 +49,31 @@ export default class ColumnChart {
             </div>
         `;
 
-      return root.firstElementChild;
+        return template;
+    }
+
+    createElement() {
+        const element = document.createElement("div",);
+        element.innerHTML = this.createTemplate();
+        return element.firstElementChild;
     }
 
     update(data) {
-      this.data = this.getDataProps(data);
-      this.render();
+        this.data = this.getDataProps(data);
+        this.render();
     }
 
     render() {
-      this.element = this.createTemplate();
+        if(this.element?.parentElement){
+            this.element.parentElement.innerHTML = this.createTemplate();
+        }
     }
 
     destroy() {
-      this.remove();
+        this.remove();
     }
 
     remove() {
-      this.element.remove();
+        this.element.remove();
     }
 }
