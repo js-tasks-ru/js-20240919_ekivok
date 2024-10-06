@@ -26,7 +26,7 @@ export default class ColumnChart {
 
     createLink = (link) => `<a href="${link}" class="column-chart__link">View all</a>`
 
-    createDataList = (data) => data.map(({ value, percent }) =>
+    createDataList = (data = []) => data.map(({ value, percent }) => 
         `<div style="--value: ${value}" data-tooltip="${percent}"></div>`).join("");
 
     createTitle = (label, link) => `
@@ -64,9 +64,7 @@ export default class ColumnChart {
     }
 
     render() {
-        if(this.element?.parentElement){
-            this.element.parentElement.innerHTML = this.createTemplate();
-        }
+        this.element.outerHTML = this.createTemplate();
     }
 
     destroy() {
@@ -77,3 +75,4 @@ export default class ColumnChart {
         this.element.remove();
     }
 }
+
