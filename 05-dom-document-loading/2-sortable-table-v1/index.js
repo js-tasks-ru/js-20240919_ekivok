@@ -23,7 +23,7 @@ export default class SortableTable {
     return div.firstElementChild;
   }
 
-  createHeader() {
+  createHeaderTemplate() {
     return `
     <div data-element="header" class="sortable-table__header sortable-table__row">
       ${this.headerConfig.map(cellData => {
@@ -32,7 +32,7 @@ export default class SortableTable {
     return `
           <div class="sortable-table__cell" data-id="${id}" data-sortable="${sortable}" data-order="${sortable && id === this.sortField ? this.sortFunction : ''}">
             <span>${title}</span>
-            ${this.createArrowElement()}
+            ${this.createArrowElementTemplate()}
             
           </div>
         `;
@@ -40,7 +40,7 @@ export default class SortableTable {
     </div>`;
   }
 
-  createArrowElement() {
+  createArrowElementTemplate() {
     return `
       <span data-element="arrow" class="sortable-table__sort-arrow">
         <span class="sort-arrow"></span>
@@ -48,36 +48,25 @@ export default class SortableTable {
     `;
   }
 
-  createImg(images = []) {
-    if (images.length) {
-      return `
-         <div class="sortable-table__cell">
-            <img class="sortable-table-image" alt="Image" src="${images[0]?.url || 'https://via.placeholder.com/32'}">
-          </div>
-      `;
-    }
-    return '';
-  }
-
-  createDataRow(value) {
+  createDataRowTemplate(value) {
     const { id } = value;
     return `
     <a href="/products/${id}" class="sortable-table__row">
-        ${this.headerConfig.map(({ id, template }) => this.createDataCell(value[id], template)).join('')}
+        ${this.headerConfig.map(({ id, template }) => this.createDataCellTemplate(value[id], template)).join('')}
     </a>
     `;
   }
 
-  createDataCell(value, template) {
+  createDataCellTemplate(value, template) {
     if (template) { return template(value); }
     return `<div class="sortable-table__cell">${value}</div>`;
   }
 
-  createDataList() {
-    return this.data.map((value) => this.createDataRow(value)).join('');
+  createDataListTemplate() {
+    return this.data.map((value) => this.createDataRowTemplate(value)).join('');
   }
 
-  createEmptyPlaceholder() {
+  createEmptyPlaceholderTemplate() {
     return `
      <div data-element="emptyPlaceholder" class="sortable-table__empty-placeholder">
         <div>
@@ -88,21 +77,21 @@ export default class SortableTable {
     `;
   }
 
-  createLoader() {
+  createLoaderTemplate() {
     return `<div data-element="loading" class="loading-line sortable-table__loading-line"></div>`;
   }
 
   createTemplate() {
     const template = `
     <div class="sortable-table">
-      ${this.createHeader()}
+      ${this.createHeaderTemplate()}
       <div data-element="body" class="sortable-table__body">
-        ${this.createDataList()}
+        ${this.createDataListTemplate()}
       </div>
 
-      ${this.createLoader()}
+      ${this.createLoaderTemplate()}
 
-      ${this.createEmptyPlaceholder()}
+      ${this.createEmptyPlaceholderTemplate()}
 
     </div>
     `;
@@ -111,11 +100,11 @@ export default class SortableTable {
   }
 
   updateHeader() {
-    this.subElements.header.outerHTML = this.createHeader();
+    this.subElements.header.outerHTML = this.createHeaderTemplate();
   }
 
   updateTableData() {
-    this.subElements.body.innerHTML = this.createDataList();
+    this.subElements.body.innerHTML = this.createDataListTemplate();
   }
 
   sortStrings(arr, param = 'asc') {
@@ -165,6 +154,5 @@ export default class SortableTable {
 
   destroy() {
     this.element.remove();
-    this.subElements = {};
   }
 }
